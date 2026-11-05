@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- dark rounded background -->
+  <rect x="2" y="2" width="60" height="60" rx="10" fill="#1f2937"/>
+  <!-- blue header bar of the table -->
+  <rect x="9" y="10" width="46" height="7" rx="2" fill="#60a5fa"/>
+  <!-- row 1: green dot (reachable only from this machine) and text bar -->
+  <circle cx="13" cy="26" r="3" fill="#34d399"/>
+  <rect x="20" y="23" width="35" height="6" rx="2" fill="#9ca3af"/>
+  <!-- row 2: amber dot (open to all networks) and text bar -->
+  <circle cx="13" cy="37" r="3" fill="#fbbf24"/>
+  <rect x="20" y="34" width="35" height="6" rx="2" fill="#9ca3af"/>
+  <!-- row 3: green dot and text bar -->
+  <circle cx="13" cy="48" r="3" fill="#34d399"/>
+  <rect x="20" y="45" width="35" height="6" rx="2" fill="#9ca3af"/>
+</svg>
