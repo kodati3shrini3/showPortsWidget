@@ -73,11 +73,17 @@ collect_rows() {   # prints one tab-separated line per listening port: port, pro
 
 SELF="$(readlink -f "$0")"   # full path of this script
 PYGUI="$(dirname "$SELF")/showPortsWidgetWindow.py"   # the window program written in Python
+K8SPY="$(dirname "$SELF")/showPortsWidgetK8s.py"   # the program that lists the cluster-internal Kubernetes services
 if [ "$1" = "--rows" ]; then collect_rows; exit 0; fi   # tab-separated rows for the window program (no lock needed)
+if [ "$1" = "--k8s-rows" ]; then [ -f "$K8SPY" ] && python3 "$K8SPY"; exit 0; fi   # tab-separated Kubernetes rows for the window program
 HAVE_PY=0   # becomes 1 when the Python window can be used
 [ -f "$PYGUI" ] && python3 -c 'import gi; gi.require_version("Gtk","3.0"); from gi.repository import Gtk' >/dev/null 2>&1 && HAVE_PY=1   # needs the file and the PyGObject and GTK 3 libraries
 if [ "$1" = "--text" ] || { [ "$HAVE_PY" = 0 ] && ! command -v zenity >/dev/null 2>&1; }; then   # terminal mode, or no window program available
   collect_rows | awk -F'\t' 'BEGIN{printf "%-6s %-5s %-34s %-24s %s\n","PORT","PROTO","REACHABLE FROM","PROGRAM","PURPOSE"} {printf "%-6s %-5s %-34s %-24s %s\n",$1,$2,$3,$4,$5}'   # prints an aligned table
+  if [ -f "$K8SPY" ] && command -v python3 >/dev/null 2>&1; then   # second table: services that exist only inside Kubernetes
+    echo; echo "KUBERNETES-ONLY SERVICES (virtual ports, not reachable from outside)"   # title of the second table
+    python3 "$K8SPY" | awk -F'\t' 'BEGIN{printf "%-22s %-44s %-22s %-34s %s\n","NAMESPACE","SERVICE","ADDRESS","PORTS","READY BACKENDS"} {printf "%-22s %-44s %-22s %-34s %s\n",$1,$2,$3,$4,$5}'   # prints the table
+  fi   # end of the second table
   exit 0   # done in terminal mode
 fi   # end of terminal mode
 
